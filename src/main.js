@@ -15,7 +15,7 @@ Vue.use(VueStorage, {
 });
 
 if (process.env.NODE_ENV === "development") {
-  Vue.prototype.API_BASE_URL = "http://192.168.243.79:8080/api";
+  Vue.prototype.API_BASE_URL = "http://192.168.199.149:8080/api";
 } else {
   Vue.prototype.API_BASE_URL = "https://lottery.lucki.top/api";
 }
