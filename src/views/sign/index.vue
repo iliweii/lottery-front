@@ -117,7 +117,7 @@ export default {
             that.model = e.result;
             that.userinfo = that.$ls.get("SIGN");
             // that.signined = true;
-          } else if (e.result.confirm === 0) {
+          } else if (e.result?.confirm === 0) {
             this.$dialog.confirm({
               title: '确认',
               message: e.message,
@@ -133,6 +133,9 @@ export default {
                 this.$toast('您取消了签到！');
               });
           } else {
+            if (e.code === 501) {
+              this.signined = true;
+            }
             that.$toast.fail(e.message);
           }
         })
@@ -149,7 +152,12 @@ export default {
         if (res.success && res.result && res.result.id) {
           that.signined = false;
           that.model = res.result;
-          that.$toast.success("您已经签过到了哦");
+
+          if (!res.result?.startFlag) {
+            that.$toast.success("您已经签过到了哦");
+          } else {
+            that.signined = true;
+          }
         } else {
           that.signined = false;
           that.$toast.fail("您的签到已过期，请重新输入姓名签到！");
