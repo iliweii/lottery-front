@@ -24,6 +24,11 @@ const routes = [
     component: () => import('@/views/FirstPage.vue')
   },
   {
+    path: '/nav',
+    name: 'nav',
+    component: () => import('@/views/NavPage.vue')
+  },
+  {
     path: '/sign',
     name: 'sign',
     component: () => import('@/views/sign/index.vue')
@@ -52,6 +57,11 @@ const routes = [
     path: '/admin/peopleList',
     name: 'adminPeopleList',
     component: () => import('@/views/admin/peopleList.vue')
+  },
+  {
+    path: '/admin/rosterList',
+    name: 'adminRosterList',
+    component: () => import('@/views/admin/rosterList.vue')
   },
   {
     path: '/admin/winnerList',
