@@ -6,6 +6,11 @@ import store from './store'
 import VueStorage from "vue-ls";
 import './plugins/vant.js'
 import axios from "axios";
+import WebSocketService from "@/utils/websocket.js";
+
+// 初始化 WebSocket
+const wsService = WebSocketService.getInstance();
+wsService.connect();
 
 Vue.config.productionTip = false
 Vue.use(VueStorage, {
