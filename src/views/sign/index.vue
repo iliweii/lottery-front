@@ -8,9 +8,11 @@
         fit="cover"
         :src="getUrl(model.peopleAvatar)"
       >
-        <template v-slot:error>{{
-          model.peopleName ? model.peopleName[0] : ""
-        }}</template>
+        <template v-slot:error>
+          <span class="avatar-name">{{
+              model.peopleName ? model.peopleName[0] : ""
+            }}</span>
+        </template>
       </van-image>
     </div>
     <van-form @submit="onSubmit">
@@ -26,9 +28,9 @@
         title="签到信息"
         v-if="model.id && model.peopleName === userinfo.peopleName"
       >
-        <van-cell title="签到时间" :value="model.signinTime" />
-        <van-cell title="签到IP" :value="model.createIp" />
-        <van-cell title="完善更多信息" is-link :to="{ name: 'signUserinfo' }" />
+        <van-cell title="签到时间" :value="model.signinTime"/>
+        <van-cell title="签到IP" :value="model.createIp"/>
+        <van-cell title="完善更多信息" is-link :to="{ name: 'signUserinfo' }"/>
         <!-- <van-cell title="聊天室" is-link :to="{ name: 'signChatroom' }" /> -->
       </van-cell-group>
 
@@ -49,7 +51,10 @@
           :loading="loading"
           :disabled="signined"
           loading-text="拼命签到中..."
-          ><van-icon name="location-o" />点击签到</van-button
+        >
+          <van-icon name="location-o"/>
+          点击签到
+        </van-button
         >
       </div>
     </van-form>
@@ -58,7 +63,7 @@
 
 <script>
 // import { mapState } from "vuex";
-import { getAction, postAction } from "@/api/manage.js";
+import {getAction, postAction} from "@/api/manage.js";
 
 export default {
   name: "SignIndex",
@@ -66,6 +71,7 @@ export default {
     return {
       model: {
         peopleName: "",
+        confirm: 0,
       },
       loading: false,
       signined: false,
@@ -79,8 +85,22 @@ export default {
       this.signined = true;
       this.model = userinfo;
       this.onCheck(userinfo.id);
-      this.userinfo = userinfo;
+      this.userinfo = Object.assign({}, userinfo);
     }
+  },
+  watch: {
+    'model.peopleName': function (newVal, oldVal) {
+      // 当 username 变化时，移除 obj 的其他属性
+      if (newVal !== oldVal) {
+        const keysToRemove = Object.keys(this.model).filter(key => key !== 'peopleName');
+        keysToRemove.forEach(key => {
+          delete this.model[key];
+        });
+      }
+      if (newVal === this.userinfo?.peopleName) {
+        this.model = Object.assign({}, this.userinfo);
+      }
+    },
   },
   methods: {
     getUrl(url) {
@@ -97,6 +117,21 @@ export default {
             that.model = e.result;
             that.userinfo = that.$ls.get("SIGN");
             // that.signined = true;
+          } else if (e.result.confirm === 0) {
+            this.$dialog.confirm({
+              title: '确认',
+              message: e.message,
+              confirmButtonText: '确认',
+              cancelButtonText: '取消'
+            })
+              .then(() => {
+                this.model.confirm = 1;
+                this.onSubmit();
+              })
+              .catch(() => {
+                this.model.confirm = 0;
+                this.$toast('您取消了签到！');
+              });
           } else {
             that.$toast.fail(e.message);
           }
@@ -110,7 +145,7 @@ export default {
     },
     onCheck(id) {
       const that = this;
-      getAction("/system/people/queryById", { id }).then((res) => {
+      getAction("/system/people/queryById", {id}).then((res) => {
         if (res.success && res.result && res.result.id) {
           that.signined = false;
           that.model = res.result;
@@ -119,7 +154,7 @@ export default {
           that.signined = false;
           that.$toast.fail("您的签到已过期，请重新输入姓名签到！");
           that.userinfo = {};
-          that.model = { peopleName: that.model.peopleName };
+          that.model = {peopleName: that.model.peopleName};
         }
       });
     },
@@ -134,9 +169,13 @@ export default {
   text-align: center;
   padding: 2vh;
 
-  /deep/.van-image__error {
+  > > > .van-image__error {
     background-color: #eee;
     font-size: 32px;
+  }
+
+  .avatar-name {
+    font-size: 3rem;
   }
 }
 </style>
