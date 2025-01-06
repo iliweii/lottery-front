@@ -31,25 +31,29 @@
       <span>{{ countdown }}</span>
     </div>
 
-    <div class="result" v-if="showResult"><li-hua /></div>
-    <div class="result" v-if="showResult"><zhi-xie /></div>
+    <div class="result" v-if="showResult">
+      <li-hua/>
+    </div>
+    <div class="result" v-if="showResult">
+      <zhi-xie/>
+    </div>
     <transition name="van-fade">
       <div v-show="showResult" class="result-text">
-        <span>恭喜</span>🎉<br />
+        <span>恭喜</span>🎉<br/>
         <!-- <span>{{ randomPeople }}</span> -->
       </div>
     </transition>
   </div>
 </template>
-    
+
 <script>
-import { getAction } from "@/api/manage.js";
+import {getAction} from "@/api/manage.js";
 import LiHua from "@/components/lihua.vue";
 import ZhiXie from "@/components/zhixie.vue";
 
 export default {
   name: "AdminLottery2",
-  components: { LiHua, ZhiXie },
+  components: {LiHua, ZhiXie},
   data() {
     return {
       loading: false,
@@ -64,9 +68,16 @@ export default {
   mounted() {
     let admin = this.$ls.get("ADMIN");
     if (!admin) {
-      this.$router.push({ name: "adminLogin" });
+      this.$router.push({name: "adminLogin"});
     }
     this.onLoad();
+
+    // 监听全局事件
+    window.addEventListener('websocketMessage', this.handleWebSocketMessage);
+  },
+  beforeDestroy() {
+    // 清理事件监听器
+    window.removeEventListener('websocketMessage', this.handleWebSocketMessage);
   },
   computed: {
     partList() {
@@ -82,7 +93,7 @@ export default {
     onLoad() {
       this.loading = true;
       const that = this;
-      getAction("/system/people/list", { pageSize: 999 }).then((res) => {
+      getAction("/system/people/list", {pageSize: 999}).then((res) => {
         if (res.success) {
           that.peopleList = res.result.records;
         } else {
@@ -90,7 +101,7 @@ export default {
         }
         this.loading = false;
       });
-      getAction("/system/process/list", { pageSize: 999 }).then((res) => {
+      getAction("/system/process/list", {pageSize: 999}).then((res) => {
         if (res.success) {
           that.processList = res.result.records;
 
@@ -131,13 +142,13 @@ export default {
           that.loading = false;
         });
     },
-    handleDraw(result) {
+    handleDraw(result, time = 5) {
       const that = this;
       let timer = setInterval(() => {
         const randomNumber = Math.floor(Math.random() * this.partList.length);
         that.randomPeople = this.partList[randomNumber].peopleName;
       }, 50);
-      that.countdown = 5;
+      that.countdown = time;
       if (result.processTotal <= 1) {
         that.countdown = 1;
       }
@@ -170,10 +181,23 @@ export default {
       let url = this.getAvatarUrl(id);
       return window._CONFIG["domianURL"] + "/common/static/" + url;
     },
+    handleWebSocketMessage(event) {
+      try {
+        // 获取消息数据
+        const data = JSON.parse(event.detail);
+        // 处理接收到的消息
+        if (data.type === '倒计时' && data.extParams && this.countdown <= 0) {
+          this.handleDraw(data.extParams.result, data.extParams.countdown);
+        } else if (data.type === '重置抽奖') {
+          this.onLoad();
+        }
+      } catch (e) {
+        console.error(e.message);
+      }
+    }
   },
 };
 </script>
-    
 
 
 <style scoped lang="scss">
@@ -208,10 +232,10 @@ export default {
     font-weight: 100;
     border: solid 3px;
     border-image: linear-gradient(
-      to right,
-      transparent,
-      rgba(255, 255, 255, 0.5),
-      transparent
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.5),
+        transparent
     );
     border-image-slice: 1;
     text-align: center;
@@ -253,12 +277,12 @@ export default {
     transform: translateX(-50%);
     background-repeat: no-repeat;
     box-shadow: inset rgba(146, 26, 17, 0.3) 0 -3px 2px,
-      inset rgba(252, 255, 255, 0.4) 0 3px 2px,
-      rgba(146, 26, 17, 0.5) 0 3px 2px -3px, rgba(0, 0, 0, 0.1) 1px 1px 20px 1px;
+    inset rgba(252, 255, 255, 0.4) 0 3px 2px,
+    rgba(146, 26, 17, 0.5) 0 3px 2px -3px, rgba(0, 0, 0, 0.1) 1px 1px 20px 1px;
 
     &.active {
       box-shadow: inset rgba(146, 26, 17, 0.3) 0 6px 2px,
-        inset rgba(252, 255, 255, 0.4) 0 -3px 2px;
+      inset rgba(252, 255, 255, 0.4) 0 -3px 2px;
       border-color: rgba(0, 0, 0, 0.6);
     }
   }
@@ -274,6 +298,7 @@ export default {
     text-align: center;
     box-sizing: border-box;
     padding-top: 10vh;
+
     span {
       display: inline-block;
       font-size: 288px;
@@ -281,6 +306,7 @@ export default {
       font-family: sans-serif;
       animation: scaleUp 1s ease-in infinite;
     }
+
     @keyframes scaleUp {
       0% {
         transform: scale(1);
@@ -319,8 +345,7 @@ export default {
           dodgerblue,
           fuchsia,
           darkorange
-        )
-        0 / 50%;
+      ) 0 / 50%;
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -348,6 +373,7 @@ export default {
   .lottery {
     /* 在此处添加样式b的样式 */
     background-size: contain;
+
     .result {
       width: 30%;
       left: 20%;

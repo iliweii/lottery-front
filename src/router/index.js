@@ -68,11 +68,11 @@ const routes = [
     name: 'adminWinnerList',
     component: () => import('@/views/admin/winnerList.vue')
   },
-  {
-    path: '/admin/lottery',
-    name: 'adminLottery',
-    component: () => import('@/views/admin/lottery.vue')
-  },
+  // {
+  //   path: '/admin/lottery',
+  //   name: 'adminLottery',
+  //   component: () => import('@/views/admin/lottery.vue')
+  // },
   {
     path: '/admin/lottery2',
     name: 'adminLottery2',

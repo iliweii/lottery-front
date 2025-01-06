@@ -40,6 +40,13 @@ export default {
     if (!admin) {
       this.$router.push({ name: "adminLogin" });
     }
+
+    // 监听全局事件
+    window.addEventListener('websocketMessage', this.handleWebSocketMessage);
+  },
+  beforeDestroy() {
+    // 清理事件监听器
+    window.removeEventListener('websocketMessage', this.handleWebSocketMessage);
   },
   methods: {
     onLoad() {
@@ -56,6 +63,19 @@ export default {
         that.finished = true;
       });
     },
+    handleWebSocketMessage(event) {
+      try {
+        // 获取消息数据
+        const data = JSON.parse(event.detail);
+        // 处理接收到的消息
+        if (data.type === '倒计时结束' || data.type === '重置抽奖') {
+          this.onLoad();
+          this.$toast.success("自动刷新成功");
+        }
+      } catch (e) {
+        console.error(e.message);
+      }
+    }
   },
 };
 </script>
