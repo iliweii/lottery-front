@@ -440,7 +440,7 @@ export default {
     }
     ConfettiRibbon.bounds = new Vector2(0, 0);
     confetti = {};
-    console.log(confetti);
+    // console.log(confetti);
     confetti.Context = function (id) {
       var i = 0;
       var canvas = document.getElementById(id);
@@ -505,10 +505,10 @@ export default {
         });
       };
     };
-    console.log(confetti);
+    // console.log(confetti);
     var confetti = new confetti.Context("confetti");
     confetti.start();
-    console.log(confetti, "-------------------");
+    // console.log(confetti, "-------------------");
     window.addEventListener("resize", function () {
       confetti.resize();
     });

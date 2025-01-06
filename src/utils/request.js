@@ -146,7 +146,7 @@ function blobToJson(data) {
       }
     } catch (err) {
       // 解析成对象失败，说明是正常的文件流
-      console.log("blob解析fileReader返回err", err);
+      // console.log("blob解析fileReader返回err", err);
     }
   };
   fileReader.readAsText(data);

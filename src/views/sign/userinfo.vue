@@ -111,7 +111,7 @@ export default {
   methods: {
     afterRead(file) {
       // 此时可以自行将文件上传至服务器
-      console.log(file);
+      // console.log(file);
       const that = this;
       uploadAction("/common/upload", { file: file.file, biz: "avatar" })
         .then((res) => {
