@@ -138,6 +138,9 @@ export default {
         that.randomPeople = this.partList[randomNumber].peopleName;
       }, 50);
       that.countdown = 5;
+      if (result.processTotal <= 1) {
+        that.countdown = 1;
+      }
       let timer2 = setInterval(() => {
         that.countdown--;
         if (that.countdown <= 0) {
