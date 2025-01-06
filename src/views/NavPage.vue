@@ -7,47 +7,24 @@
       scrolling="no"
       marginheight="0"
       marginwidth="0"
-      src="https://surl.amap.com/3hHXiYhZfQE"
+      src="https://m.amap.com/navi/?start=116.359390,39.887457&dest=116.386529,39.849681&destName=%E5%98%89%E5%94%90%E7%B2%A4%E5%AE%B4*%E8%9E%8D%E5%90%88%E8%8F%9C&naviBy=bus&key=c2f158957711d72aa068a9a9e82a922a&jscode=0170397382463f09ed4eeaa0530a2283"
     ></iframe>
-
-    <van-popup
-      v-model="show"
-      position="bottom"
-      :overlay="false"
-      round transition-appear
-      safe-area-inset-bottom
-      :style="{ height: '150px' }"
-    >
-      <div class="fp-popup">
-        <van-button type="primary" icon="guide-o" block @click="handleNav">导航
-        </van-button>
-        <van-button type="primary" icon="flag-o" block plain @click="handleSign">去签到
-        </van-button>
-      </div>
-    </van-popup>
   </div>
 </template>
 
 <script>
 export default {
-  name: "FirstPage",
+  name: "NavPage",
   data() {
     return {
       iframeWidth: window.innerWidth, // 设置为页面宽度的90%
-      iframeHeight: window.innerHeight - 150, // 设置为页面高度的50%
-      show: true,
+      iframeHeight: window.innerHeight, // 设置为页面高度的50%
     };
   },
   methods: {
     updateIframeSize() {
       this.iframeWidth = window.innerWidth; // 你可以根据需求调整
-      this.iframeHeight = window.innerHeight - 150; // 你可以根据需求调整
-    },
-    handleNav() {
-      this.$router.push({name: "nav"});
-    },
-    handleSign() {
-      this.$router.push({name: "sign"});
+      this.iframeHeight = window.innerHeight; // 你可以根据需求调整
     },
   },
   created() {
