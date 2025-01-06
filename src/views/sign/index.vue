@@ -10,7 +10,7 @@
       >
         <template v-slot:error>
           <span class="avatar-name">{{
-              model.peopleName ? model.peopleName[0] : ""
+              model?.peopleName ? model?.peopleName[0] : ""
             }}</span>
         </template>
       </van-image>
@@ -58,15 +58,21 @@
         >
       </div>
     </van-form>
+
+    <transition name="fade">
+      <admin-lottery3 class="lottery3" v-show="lottery3" @start="lottery3 = true" @done="lottery3 = false"/>
+    </transition>
   </div>
 </template>
 
 <script>
 // import { mapState } from "vuex";
 import {getAction, postAction} from "@/api/manage.js";
+import AdminLottery3 from "@/views/admin/lottery3.vue";
 
 export default {
   name: "SignIndex",
+  components: {AdminLottery3},
   data() {
     return {
       model: {
@@ -76,6 +82,7 @@ export default {
       loading: false,
       signined: false,
       userinfo: {},
+      lottery3: false,
     };
   },
   mounted() {
@@ -185,6 +192,12 @@ export default {
   .avatar-name {
     font-size: 3rem;
   }
+}
+
+.lottery3 {
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 </style>
   

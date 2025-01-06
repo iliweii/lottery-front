@@ -4,7 +4,7 @@
       v-if="
         processList.length > 0 &&
         !loading &&
-        countdown === 0 &&
+        countdown == 0 &&
         getAvatarUrl(processList[processList.length - 1].peopleId)
       "
       round
@@ -52,7 +52,7 @@ import LiHua from "@/components/lihua.vue";
 import ZhiXie from "@/components/zhixie.vue";
 
 export default {
-  name: "AdminLottery2",
+  name: "AdminLottery3",
   components: {LiHua, ZhiXie},
   data() {
     return {
@@ -66,10 +66,6 @@ export default {
     };
   },
   mounted() {
-    let admin = this.$ls.get("ADMIN");
-    if (!admin) {
-      this.$router.push({name: "adminLogin"});
-    }
     this.onLoad();
 
     // 监听全局事件
@@ -83,10 +79,6 @@ export default {
     partList() {
       const ids = this.processList.map((e) => e.peopleId);
       return this.peopleList.filter((e) => !ids.includes(e.id));
-    },
-    winnerList() {
-      const ids = this.processList.map((e) => e.peopleId);
-      return this.peopleList.filter((e) => ids.includes(e.id));
     },
   },
   methods: {
@@ -143,6 +135,7 @@ export default {
         });
     },
     handleDraw(result, time = 5) {
+      this.$emit('start');
       const that = this;
       let timer = setInterval(() => {
         const randomNumber = Math.floor(Math.random() * this.partList.length);
@@ -163,6 +156,7 @@ export default {
           that.showResult = true;
           setTimeout(() => {
             that.showResult = false;
+            this.$emit('done');
           }, 5 * 1000);
         }
       }, 1000);
@@ -206,7 +200,6 @@ export default {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-image: url(https://imgcdn.lucki.top/2024/01/26/65b37b4336df9.jpg);
   background-position: center;
   background-size: cover;
 
@@ -216,7 +209,7 @@ export default {
     // bottom: calc(3% + 10px);
     top: calc(10vh + 5px);
     z-index: 0;
-    border: rgb(200, 40, 28) solid 2px;
+    border: rgb(222, 28, 49) solid 2px;
     box-shadow: rgba(0, 0, 0, 0.05) 1px 1px 10px 1px;
   }
 
@@ -227,64 +220,27 @@ export default {
     // bottom: 3%;
     top: 10vh;
     left: 50%;
-    transform: translateX(-50%);
     font-size: 48px;
     font-weight: 100;
-    border: solid 3px;
-    border-image: linear-gradient(
-        to right,
-        transparent,
-        rgba(255, 255, 255, 0.5),
-        transparent
-    );
-    border-image-slice: 1;
     text-align: center;
     line-height: 72px;
     letter-spacing: 24px;
     text-indent: 24px;
-    color: #fff;
+    color: #fff; /* 使用鲜艳的红色或其他明亮颜色，使名字更加显眼 */
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); /* 给文字添加阴影，使其更有立体感 */
+    padding: 20px 40px; /* 添加一些内边距，避免文字贴边 */
+    border-radius: 8px; /* 让名字周围的背景有圆角，增加现代感 */
+    background: linear-gradient(45deg, #ff6f00, #ff4081); /* 渐变背景颜色，增加视觉冲击 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* 设置阴影，使文字浮动感更强 */
+    transform: translateY(-20px) translateX(-50%); /* 让名字轻微上浮 */
   }
 
   .winners {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: auto;
-    min-height: 100px;
-    text-align: center;
-    color: #fff;
-    background-image: linear-gradient(to top, #a82224, #D42419);
-
-    div {
-      padding: 2px;
-      // background-color: #D42419;
-    }
+    display: none;
   }
 
   .btns {
-    position: fixed;
-    bottom: 17vh;
-    transition: 0.2s;
-    background-image: url(https://imgcdn.lucki.top/2024/01/24/65b107563b5da.png);
-    // width: 35%;
-    height: 45px;
-    width: 131px;
-    background-size: 100% 100%;
-    background-color: transparent;
-    border: none;
-    left: 50%;
-    transform: translateX(-50%);
-    background-repeat: no-repeat;
-    box-shadow: inset rgba(146, 26, 17, 0.3) 0 -3px 2px,
-    inset rgba(252, 255, 255, 0.4) 0 3px 2px,
-    rgba(146, 26, 17, 0.5) 0 3px 2px -3px, rgba(0, 0, 0, 0.1) 1px 1px 20px 1px;
-
-    &.active {
-      box-shadow: inset rgba(146, 26, 17, 0.3) 0 6px 2px,
-      inset rgba(252, 255, 255, 0.4) 0 -3px 2px;
-      border-color: rgba(0, 0, 0, 0.6);
-    }
+    display: none;
   }
 
   .countdown {
@@ -302,9 +258,10 @@ export default {
     span {
       display: inline-block;
       font-size: 288px;
-      color: rgba(255, 255, 255, 0.85);
+      color: #fff;
       font-family: sans-serif;
       animation: scaleUp 1s ease-in infinite;
+      text-shadow: #000 0 0 1px;
     }
 
     @keyframes scaleUp {
