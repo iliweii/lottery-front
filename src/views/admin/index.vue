@@ -10,8 +10,14 @@
       <van-cell title="总签到人数" :value="model.total" />
       <van-cell title="签到人员管理" is-link :to="{ name: 'adminPeopleList' }">
         <template #title>
+          <van-icon name="underway-o" />
+          <span class="custom-title">签到记录查询</span>
+        </template>
+      </van-cell>
+      <van-cell title="抽奖人员清单" is-link :to="{ name: 'adminRosterList' }">
+        <template #title>
           <van-icon name="friends-o" />
-          <span class="custom-title">签到人员管理</span>
+          <span class="custom-title">签到人员查询</span>
         </template>
       </van-cell>
     </van-cell-group>
