@@ -143,7 +143,7 @@ export default {
         .then((res) => {
           if (res.success) {
             that.model.content = "";
-            console.log(res);
+            // console.log(res);
           } else {
             that.$toast.fail(res.message);
           }
@@ -157,11 +157,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/deep/.van-image__error {
+>>> .van-image__error {
   background-color: #eee;
   font-size: 16px;
 }
-/deep/.van-list__finished-text {
+>>> .van-list__finished-text {
   font-size: 11px;
   line-height: 16px;
   color: #ccc;
