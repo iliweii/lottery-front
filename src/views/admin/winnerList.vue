@@ -17,14 +17,32 @@
         :key="item.id"
         :title="`第${index + 1}位获奖者`"
       >
-        <van-cell :title="item.processRemark" :value="item.createTime" />
+        <van-cell :title="item.processRemark" :value="item.createTime" @click="showDetail(item, index)"/>
       </van-cell-group>
     </van-list>
+
+    <van-dialog v-model="detailShow" :title="detailTitle" show-cancel-button :show-confirm-button="false"
+                cancel-button-text="关闭" close-on-click-overlay>
+      <p class="tip">本次抽奖基数（本次抽奖开始时的未中奖人数）为 <b class="b">{{ detailItem.processTotal }}</b>，子抽奖次数（随机数）为 <b
+        class="b">{{ detailItem.processTime }}</b>，每次子抽奖详情如下：</p>
+      <van-cell-group inset class="scroll-body">
+        <van-cell v-for="(name, i) in detailItem?.details" :key="i" :title="i + 1">
+          <template #default>
+            <span v-if="i < detailItem.details.length - 1">{{ name }}</span>
+            <b v-else class="b">{{ name }}</b>
+          </template>
+        </van-cell>
+      </van-cell-group>
+      <p class="tip small">
+        <van-icon name="info-o"/>
+        即最后一次子抽奖中奖者为本次抽奖中奖者
+      </p>
+    </van-dialog>
   </div>
 </template>
-  
-  <script>
-import { getAction } from "@/api/manage.js";
+
+<script>
+import {getAction} from "@/api/manage.js";
 
 export default {
   name: "AdminWinnerList",
@@ -33,12 +51,15 @@ export default {
       loading: false,
       finished: false,
       list: [],
+      detailShow: false,
+      detailTitle: '',
+      detailItem: {},
     };
   },
   mounted() {
     let admin = this.$ls.get("ADMIN");
     if (!admin) {
-      this.$router.push({ name: "adminLogin" });
+      this.$router.push({name: "adminLogin"});
     }
 
     // 监听全局事件
@@ -51,7 +72,7 @@ export default {
   methods: {
     onLoad() {
       const that = this;
-      getAction("/system/process/list", { pageSize: 999 }).then((res) => {
+      getAction("/system/process/list", {pageSize: 999}).then((res) => {
         if (res.success) {
           let processList = res.result.records;
           that.list = processList;
@@ -75,8 +96,34 @@ export default {
       } catch (e) {
         console.error(e.message);
       }
-    }
+    },
+    showDetail(item, index) {
+      this.detailShow = true;
+      this.detailTitle = `第${index + 1}次抽奖明细数据`;
+      this.detailItem = item;
+      this.detailItem.details = item?.processInfo?.split(',') || [];
+    },
   },
 };
 </script>
-  
+
+<style scoped>
+.tip {
+  font-size: 14px;
+  padding: 0 14px;
+}
+
+.tip.small {
+  font-size: 12px;
+  color: #999;
+}
+
+.b {
+  color: dodgerblue;
+}
+
+.scroll-body {
+  max-height: 150px;
+  overflow-y: auto;
+}
+</style>
