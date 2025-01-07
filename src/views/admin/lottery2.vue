@@ -158,7 +158,8 @@ export default {
           clearInterval(timer);
           that.randomPeople = that.getName(result.peopleId);
           clearInterval(timer2);
-          that.processList.push(result);
+          if (that.processList.length === 0 || that.processList[that.processList.length - 1].peopleId !== result.peopleId)
+            that.processList.push(result);
 
           that.showResult = true;
           setTimeout(() => {
