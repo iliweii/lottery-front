@@ -19,11 +19,13 @@ Vue.use(VueStorage, {
   storage: "local", // storage name session, local, memory
 });
 
-if (process.env.NODE_ENV === "development") {
-  Vue.prototype.API_BASE_URL = "http://192.168.199.149:8080/api";
-} else {
-  Vue.prototype.API_BASE_URL = "https://lottery.lucki.top/api";
-}
+// if (process.env.NODE_ENV === "development") {
+//   Vue.prototype.API_BASE_URL = "http://192.168.199.149:8080/api";
+//   Vue.prototype.API_BASE_URL = "http://127.0.0.1:19731/api";
+// } else {
+  const {protocol, host} = window.location;
+  Vue.prototype.API_BASE_URL = `${protocol}//${host}/api`;
+// }
 window._CONFIG["domianURL"] = Vue.prototype.API_BASE_URL
 axios.defaults.baseURL = Vue.prototype.API_BASE_URL
 
