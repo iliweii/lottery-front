@@ -63,6 +63,8 @@ export default {
       processList: [],
       randomPeople: "开始",
       countdown: 0,
+      countdownTimer: null,
+      peopleNameTimer: null,
     };
   },
   mounted() {
@@ -137,7 +139,10 @@ export default {
     handleDraw(result, time = 5) {
       this.$emit('start');
       const that = this;
-      let timer = setInterval(() => {
+      if (this.peopleNameTimer) {
+        clearInterval(this.peopleNameTimer);
+      }
+      this.peopleNameTimer = setInterval(() => {
         const randomNumber = Math.floor(Math.random() * this.partList.length);
         that.randomPeople = this.partList[randomNumber]?.peopleName;
       }, 50);
@@ -145,13 +150,17 @@ export default {
       if (result.processTotal <= 1) {
         that.countdown = 1;
       }
-      let timer2 = setInterval(() => {
+      if (this.countdownTimer) {
+        clearInterval(this.countdownTimer);
+      }
+      this.countdownTimer = setInterval(() => {
         that.countdown--;
         if (that.countdown <= 0) {
-          clearInterval(timer);
+          clearInterval(that.peopleNameTimer);
           that.randomPeople = that.getName(result.peopleId);
-          clearInterval(timer2);
-          that.processList.push(result);
+          clearInterval(that.countdownTimer);
+          if (that.processList.length === 0 || that.processList[that.processList.length - 1].peopleId !== result.peopleId)
+            that.processList.push(result);
 
           that.showResult = true;
           setTimeout(() => {
