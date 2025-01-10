@@ -216,7 +216,8 @@ export default {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-image: url(https://imgcdn.lucki.top/2024/01/26/65b37b4336df9.jpg);
+  //background-image: url(https://imgcdn.lucki.top/2024/01/26/65b37b4336df9.jpg);
+  background-image: url(@/assets/background.png);
   background-position: center;
   background-size: cover;
 
@@ -276,12 +277,14 @@ export default {
     position: fixed;
     bottom: 17vh;
     transition: 0.2s;
-    background-image: url(https://imgcdn.lucki.top/2024/01/24/65b107563b5da.png);
+    //background-image: url(https://imgcdn.lucki.top/2024/01/24/65b107563b5da.png);
+    background-color: #E60012;
+    background-image: url(@/assets/button.png);
     // width: 35%;
     height: 45px;
     width: 131px;
     background-size: 100% 100%;
-    background-color: transparent;
+    //background-color: transparent;
     border: none;
     left: 50%;
     transform: translateX(-50%);
